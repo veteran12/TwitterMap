@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html> 
+<head> 
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+  <title>Google Maps Multiple Markers</title> 
+  <script src="http://maps.google.com/maps/api/js?sensor=false" 
+          type="text/javascript"></script>
+  <script type="text/javascript"
+          src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js">
+  </script>
+</head> 
+<body>
+  <div id="map" style="width: 100%; height: 600px;"></div>
+      Please input your keyword:
+      <input type='text' id='keyword' />
+      <button type='button'>Submit</button>
+  <script type="text/javascript">
+    
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 2,
+      center: new google.maps.LatLng(0, 0),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+    var markersArray = [];
+    
+    $(document).ready(function(){
+      $("button").click(function(){
+        var x=eval(document.getElementById('keyword')).value
+        var require = '../search/keyword'
+        var keyword = {keyword : x}
+        $.getJSON(require, keyword,
+            function(data) {
+              //alert(data[1][0])
+              var locations = new Array();
+              for (var key in data) {
+                //alert(data[key][0])
+                var geo = new Array(data[key][0], data[key][1], data[key][2]);
+                locations.push(geo);
+              }
+              showPine(locations)
+            });
+      });
+    });
+    
+    
+    function showPine(locations) {
+      clearOverlays();
+      var infowindow = new google.maps.InfoWindow();
+
+      var marker, i;
+
+      for (i = 0; i < locations.length; i++) {
+        var longti = parseFloat(locations[i][0]);
+        var lati = parseFloat(locations[i][1]);
+        marker = new google.maps.Marker({
+          position: new google.maps.LatLng(lati, longti),
+          map: map
+        })
+        markersArray.push(marker);
+
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+          return function() {
+            infowindow.setContent(locations[i][2]);
+            infowindow.open(map, marker);
+          }
+        })(marker, i));
+      }
+    }
+    
+    function clearOverlays() {
+      for (var i = 0; i < markersArray.length; i++ ) {
+      markersArray[i].setMap(null);
+      }
+      markersArray.length = 0;
+    }
+  </script>
+</body>
+</html>
