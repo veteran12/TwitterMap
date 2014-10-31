@@ -8,6 +8,8 @@ This project is to build a website which can accept a key word and then display 
 2,I wrote several python files to retrieve data using twitter streaming api and then persist the data into dynamodb.
 3,I use aws elastic beanstalk to deploy the website.
 
+You can see this website via this link, http://twittermap-env-23t6unfgmj.elasticbeanstalk.com/index/
+
 note,
 1, I use json format file to transfer data between twitter, data files, front end pages, backend server. 
 for js, I use a lib function from Jquery to call backend service,
